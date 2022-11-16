@@ -1,12 +1,12 @@
 // 封装axios请求
 import theAxios from "axios";
 import message from "@/utils/message.js"; //消息提示
-import { getToken } from "@/utils/cookies.js"; //获取token
+import { getToken } from "@/utils/token.js"; //获取token值
 import router from "@/router/index.js";
 
 const axios = theAxios.create({
   baseURL: "/api", // 请求根路径
-  timeout: 20000, // 10秒超时时间
+  timeout: 10000, // 10秒超时时间
 });
 
 // 添加请求拦截器

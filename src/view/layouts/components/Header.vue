@@ -7,15 +7,22 @@
           <el-icon :size="20" class="options-icon mr-8px">
             <ElemeFilled />
           </el-icon>
-          <span>商城系统</span>
+          <span class="text-18px">商城系统</span>
         </div>
         <!-- 选项-left -->
         <div class="h-64px">
           <!-- 文字提示 -->
-          <el-tooltip class="box-item" effect="dark" content="隐藏侧边栏" placement="bottom">
+          <el-tooltip class="box-item" v-if="$store.state.asideWidth === '250px'" effect="dark" content="隐藏侧边栏"
+            placement="bottom">
             <!-- 隐藏侧边栏 -->
-            <el-icon :span="16" class="options-icon options-icon-hover">
+            <el-icon :span="16" class="options-icon options-icon-hover" @click="$store.dispatch('asideMenuWidth')">
               <Fold />
+            </el-icon>
+          </el-tooltip>
+          <!-- 展开侧边栏 -->
+          <el-tooltip class="box-item" v-else effect="dark" content="展开侧边栏" placement="bottom">
+            <el-icon :span="16" class="options-icon options-icon-hover" @click="$store.dispatch('asideMenuWidth')">
+              <Expand />
             </el-icon>
           </el-tooltip>
           <!-- 文字提示 -->
@@ -55,8 +62,8 @@
         <!-- 下拉菜单 -->
         <el-dropdown placement="bottom-start">
           <div class="userOption h-64px mx-16px cursor-pointer text-sm font-normal text-gray-200">
-            <el-avatar :size="25" :src="$store.state.userInfo.avatar" class="mx-4px" />
-            <span class="mx-4px">{{ $store.state.userInfo.username }}</span>
+            <el-avatar :size="25" :src="userInfo.avatar" class="mx-4px" />
+            <span class="mx-4px">{{ userInfo.username }}</span>
             <el-icon :span="16" class="options-icon mt-6px">
               <ArrowDown />
             </el-icon>
@@ -74,7 +81,7 @@
         </el-dropdown>
         <!-- 右侧密码修改框 -->
         <form-drawer ref="drawerRef" title="修改密码" size="45%" destroyOnClose @submitFn="submitForm">
-          <el-form :model="passWordForm" :rules="formRules">
+          <el-form ref="fromRef" :model="passWordForm" :rules="formRules">
             <el-form-item label="旧密码" label-width="80px" prop="oldpassword">
               <el-input v-model="passWordForm.oldpassword" autocomplete="off" />
             </el-form-item>
@@ -93,14 +100,11 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
-import { useRouter } from 'vue-router' //路由
 import FormDrawer from '@/components/FormDrawer.vue' //封装的DrawerForm组件
 import { useFullscreen } from '@vueuse/core' //全屏组件
-import store from '@/store/index.js' //状态管理
-import { ElMessageBox } from 'element-plus' //消息弹出框
-import Message from '@/utils/message.js' //消息提示框
-import { removeToken } from '@/utils/cookies.js' //删除token
-const router = useRouter() //创建router实例对象
+import { useStore } from 'vuex' //状态管理
+const store = useStore()
+const userInfo = store.state.userInfo
 
 const {
   //全屏状态
@@ -109,9 +113,11 @@ const {
   toggle
 } = useFullscreen()
 
-//drawerRef
+//drawerRef——drawer节点：用来开启和关闭drawer抽屉的
 const drawerRef = ref(null)
 
+// fromRef——表单节点：拿到表单的一系列参数以及方法
+const fromRef = ref(null)
 
 //密码页表单的数据
 let passWordForm = reactive({
@@ -144,22 +150,10 @@ const getGithub = () => location.href = 'https://github.com/jonlyes'
 
 // 退出登录
 const logout = () => {
-  ElMessageBox.confirm(
-    '是否要退出登录',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning',
-    }
-  )
-    .then(() => {
-      // 确定退出调用
-      removeToken() //删除cookies的token值
-      router.push('/login')
-      Message('退出登录成功！')
-    }).finally(() => {
-      drawerRef.value.close()
-    })
+  //调用logout方法退出登录
+  store.dispatch('logout').finally(() => {
+    drawerRef.value.close(); //关闭drawer抽屉组件
+  });
 }
 
 //弹出修改密码页面
@@ -167,19 +161,14 @@ const openEditorPassWord = () => drawerRef.value.open()
 
 // 修改密码
 const submitForm = () => {
-  drawerRef.value.validate((valid)=>{
+  fromRef.value.validate((valid) => {
     // 判断表单验证是否通过，false就return
-    if(!valid){
-      return
+    if (!valid) {
+      return undefined
     }
-    store.dispatch('updatePassWord', passWordForm).then(() => {
-    // 确定退出调用
-    removeToken(); //删除cookies的token值
-    router.push("/login"); //跳转到登录页
-    Message("修改密码成功，请重新登录！");
-  }).finally(() => {
-    drawerRef.value.close()
-  });
+    store.dispatch('updatePassWord', passWordForm).finally(() => {
+      drawerRef.value.close() //关闭drawer抽屉组件
+    });
   })
 }
 
@@ -206,6 +195,16 @@ const submitForm = () => {
   justify-content: center;
   align-items: center;
   margin: 0 16px 0 16px;
+}
+
+:deep( .options-icon.el-icon svg){
+  width:20px;
+  height: 20px;
+}
+
+:deep(.el-icon svg) {
+  width: 16px;
+  height: 16px;
 }
 
 /* 修改密码/退出登录-hover */

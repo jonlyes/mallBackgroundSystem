@@ -1,4 +1,4 @@
-// 封装cookie工具函数
+// cookies插件封装token工具函数
 import { useCookies } from "@vueuse/integrations/useCookies";
 
 const TokenKey = "mallSystem";

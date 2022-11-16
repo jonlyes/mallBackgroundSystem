@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 let isShowDrawer = ref(false) //是否显示抽屉
 
 //打开抽屉
@@ -24,9 +24,6 @@ const open = () => { isShowDrawer.value = true }
 
 //关闭抽屉
 const close = () => { isShowDrawer.value = false }
-
-// 提交事件 传入回调函数
-// const submitForm = null
 
 // 接受父组件传的prop值
 defineProps({

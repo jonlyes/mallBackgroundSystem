@@ -5,7 +5,7 @@
 <script setup>
 </script>
 <style>
-#nprogress .bar{
+#nprogress .bar {
   background-color: #f5f5f5 !important;
   height: 3px !important;
 }

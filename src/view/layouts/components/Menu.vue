@@ -1,8 +1,9 @@
 <template>
-    <div class="AsideMenu">
-        <el-menu default-active="2" :router="true" :unique-opened="true" class="border-0" @select="handelSelect">
-            <template v-for="item1, index of $store.state.userInfo.menus" :key="index">
-                <!-- 有子菜单就遍历子菜单，无子菜单就直接展示子菜单 -->
+    <div class="AsideMenu shadow-lg" :style="{ 'width': $store.state.asideWidth }">
+        <el-menu class="border-0" :default-active="$route.path" :unique-opened="true" :collapse="isCollapse"
+            @select="handelSelect">
+            <template v-for="item1, index of userInfo.menus" :key="index">
+                <!-- 有子菜单就包裹一级菜单并遍历子菜单，无子菜单就直接展示子菜单 -->
                 <el-sub-menu v-if="item1.child && item1.child.length > 0" :index="item1.name">
                     <template #title>
                         <el-icon>
@@ -33,24 +34,24 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, toRaw } from 'vue'
-// import {useRouter} from 'vue-router'
-import { useStore, } from 'vuex'
-// import store from '@/store/index.js'
-const store = useStore()
-const userInfo = store.state.userInfo
-console.log(userInfo);
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex' //vuex状态管理
+const router = useRouter() //路由器
+const store = useStore() //创建store实例对象
 
+const userInfo = store.state.userInfo //拿到用户信息
 
+//计算属性——通过计算state的asideWidth属性来确认是否展开侧边栏
+let isCollapse = computed(() => store.state.asideWidth !== '250px')
 
-const handelSelect = (a) => {
-    console.log(a);
+const handelSelect = (routePath) => {
+    router.push(routePath) //跳转路由
 }
 </script>
 
 <style scoped>
 .AsideMenu {
-    width: 250px;
     position: fixed;
     top: 64px;
     bottom: 0px;

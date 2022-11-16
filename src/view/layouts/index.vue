@@ -8,11 +8,13 @@
       </el-header>
       <el-container>
         <!-- 侧边栏 -->
-        <el-aside width="250px" class="bg-stone-50">
+        <el-aside class="bg-white" :style="{ 'width': $store.state.asideWidth }">
           <Menu></Menu>
         </el-aside>
         <!-- 主题区域 -->
-        <el-main>Main</el-main>
+        <el-main>
+          <Main></Main>
+        </el-main>
       </el-container>
     </el-container>
   </div>
@@ -20,38 +22,13 @@
 <script setup>
 import Header from '@/view/layouts/components/Header.vue' //头部组件
 import Menu from '@/view/layouts/components/Menu.vue' //侧边菜单栏组件
+import Main from '@/view/layouts/components/Main.vue' //主体区域组件
 
 </script>
 
 <style scoped>
-.options {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.el-main {
+  height: calc(100vh - 64px);
+  @apply p-0 pt-10px mx-2px;
 }
-
-/* 功能菜单图标 */
-.options-icon {
-  @apply align-middle text-gray-200 h-64px mb-6px cursor-pointer bg-light-100 bg-opacity-0;
-}
-
-.options-icon-hover {
-  @apply w-42px hover: bg-opacity-10;
-}
-
-.userOption {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 16px 0 16px;
-}
-
-/* .el-aside {
-  -ms-overflow-style: none;
-  overflow: auto;
-}
-
-.el-aside::webkit-scrollbar {
-  display: none;
-} */
 </style>

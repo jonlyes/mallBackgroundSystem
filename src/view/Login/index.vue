@@ -35,12 +35,14 @@
                     </el-input>
                 </el-form-item>
                 <!-- 登录按钮 -->
+
                 <el-form-item>
-                    <el-button type="primary" color="#626aef" class="w-250px text-white" :loading="isLoad" round
+                    <el-button type="primary" color="#626aef" class="w-250px text-white" round :loading="isLoad"
                         @click="login">
                         登录
                     </el-button>
                 </el-form-item>
+
             </el-form>
         </el-col>
     </el-row>
@@ -49,11 +51,8 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router' //路由
-import { LoginApi } from '@/api/manager.js' //管理员模块API
-import { setToken } from '@/utils/cookies' //cookie工具函数
 import message from '@/utils/message.js' //消息弹出工具函数
-// import { getInfoPermissions } from '@/api/manager.js' //获取管理员模块——管理员信息和权限菜单
-import {useStore} from 'vuex'
+import { useStore } from 'vuex'
 //路由器(注意：useRouter创建实例对象必须在顶部创建，否则拿到的是undefined)
 const router = useRouter()
 const store = useStore()
@@ -63,9 +62,6 @@ let userInfo = reactive({
     username: '',
     password: ''
 })
-
-//管理员信息和权限菜单
-// let userPermissions = reactive([])
 
 let isLoad = ref(false) //button是否加载状态
 
@@ -90,15 +86,12 @@ const login = () => {
     formRef.value.validate((valid) => {
         // 判断表单验证是否通过，false就return
         if (!valid) {
-            return
+            return undefined
         }
         isLoad.value = true //表单校验成功就开启load
+        
         // 登录成功
-        LoginApi(userInfo).then((res) => {
-            //存储token
-            setToken(res.token)
-            // 获取管理员信息和菜单权限并存储到state
-            // store.dispatch('getUserPermissions')
+        store.dispatch('login', userInfo).then(() => {
             // 消息提示
             message('登录成功')
             // 跳转首页
@@ -122,7 +115,5 @@ const login = () => {
 .el-divider__text.is-center {
     @apply font-normal text-sm text-gray-500/50;
 }
-
-;
 </style>
 

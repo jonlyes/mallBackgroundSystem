@@ -25,14 +25,13 @@
         </span>
     </div>
     <!-- 主体路由页 -->
-    <div class="mx-10px">
+    <div class="mx-10px mt-34px" id="main">
         <router-view></router-view>
     </div>
-
     <!-- 站点信息 -->
     <div class="siteInfo">
         <span class="leading-50px text-neutral-400">本站点根据源项目由<span class="siteTitle"
-                @click="$router.push(github.com/jonlyes/mallBackgroundSystem)">《Jonlyes》</span>搭建的练手vue3+element项目</span>
+                @click="github">《Jonlyes》</span>搭建的练手vue3+element项目</span>
     </div>
 </template>
 
@@ -43,6 +42,11 @@ import { useRouter, useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { setTagsList, getTagsList, removeTagsList } from '@/utils/tagsList.js'
 const router = useRouter()
 const route = useRoute()
+
+const github = () => {
+    location.href = 'https://github.com/jonlyes'
+}
+
 // 路由导航列表
 const tagList = ref([])
 
@@ -125,13 +129,16 @@ onBeforeRouteUpdate(({ path, meta }) => {
 </script>
 
 <style scoped>
-.tag-list {
+.scrollbar-demo-item {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    height: 32px;
-    z-index: 100;
-    @apply px-10px;
+    justify-content: center;
+    height: 50px;
+    margin: 10px;
+    text-align: center;
+    border-radius: 4px;
+    background: var(--el-color-primary-light-9);
+    color: var(--el-color-primary);
 }
 
 .dropdown {

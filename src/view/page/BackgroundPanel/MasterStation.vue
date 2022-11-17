@@ -98,17 +98,14 @@ import * as echarts from 'echarts' //echarts图表库
 const store = useStore() //状态管理
 const router = useRouter() //路由器
 
-// 订单统计图表
-let orderCharts = null
-
-//订单统计图表load效果
-let orderLoad = ref(true)
 
 //定义局部自定义指令 v-resize
 const vResize = {
   mounted(el) {
-    const el_resize = new window.ResizeObserver((entries) => {
-      let size = entries[0].contentRect.width / 80.375 + "px";
+    // main区域rem自适应
+    const el_resize = new window.ResizeObserver(() => {
+      let main = document.getElementById('main')
+      let size = main.offsetWidth / 80.375 + 'px'
       document.querySelector("html").style.fontSize = size
       // main每次改变宽度就重新获得订单统计图表的尺寸并让图表自适应
       const { offsetWidth: width, offsetHeight: height } = document.getElementsByClassName('order-charts')
@@ -117,6 +114,12 @@ const vResize = {
     el_resize.observe(el);
   },
 }
+
+// 订单统计图表
+let orderCharts = null
+
+//订单统计图表load效果
+let orderLoad = ref(true)
 
 //面板数据
 const panels = ref([])
@@ -192,7 +195,7 @@ let goodsOrderTips = ref({})
 // 获取店铺提示数据
 store.dispatch('getShopTips').then(res => {
   goodsOrderTips.value = res
-}).catch(err=>{
+}).catch(err => {
   console.log(err);
 })
 </script>
@@ -219,7 +222,7 @@ store.dispatch('getShopTips').then(res => {
 }
 
 .icon-item {
-  display:flex;
+  display: flex;
   justify-content: center;
   align-items: center;
   @apply w-8.8238rem h-5.5rem mx-10px bg-white flex-col text-sm rounded;

@@ -29,6 +29,6 @@ import Main from '@/view/layouts/components/Main.vue' //主体区域组件
 <style scoped>
 .el-main {
   height: calc(100vh - 64px);
-  @apply p-0 pt-10px mx-2px;
+  @apply p-0 mx-2px;
 }
 </style>

@@ -1,4 +1,4 @@
-import { getStatisticsA, getStatisticsB,getStatisticsC } from "@/api/backgroundStatistics.js"; //后台统计模块接口
+import { getStatisticsA, getStatisticsB,getStatisticsC } from "@/api/backgroundStatistics/backgroundStatistics.js"; //后台统计模块接口
 const backgroundPanel = {
   state: {
     // icon面板数据

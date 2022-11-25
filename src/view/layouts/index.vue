@@ -13,7 +13,7 @@
         </el-aside>
         <!-- 主题区域 -->
         <el-main>
-          <Main></Main>
+            <Main></Main>
         </el-main>
       </el-container>
     </el-container>

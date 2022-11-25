@@ -25,14 +25,21 @@
         </span>
     </div>
     <!-- 主体路由页 -->
-    <div class="mx-10px mt-34px" id="main">
-        <router-view></router-view>
-    </div>
-    <!-- 站点信息 -->
-    <div class="siteInfo">
-        <span class="leading-50px text-neutral-400">本站点根据源项目由<span class="siteTitle"
-                @click="github">《Jonlyes》</span>搭建的练手vue3+element项目</span>
-    </div>
+
+    <el-scrollbar height="657.6px">
+        <!-- 内容区域 -->
+        <div>
+            <!-- 主体区域 -->
+            <div class="mx-10px mt-34px" v-resize>
+                <router-view></router-view>
+            </div>
+            <!-- 站点信息 -->
+            <div class="siteInfo">
+                <span class="leading-50px text-neutral-400">本站点根据源项目由<span class="siteTitle"
+                        @click="github">《Jonlyes》</span>搭建的练手vue3+element项目</span>
+            </div>
+        </div>
+    </el-scrollbar>
 </template>
 
 <script setup>
@@ -42,6 +49,19 @@ import { useRouter, useRoute, onBeforeRouteUpdate } from 'vue-router'
 import { setTagsList, getTagsList, removeTagsList } from '@/utils/tagsList.js'
 const router = useRouter()
 const route = useRoute()
+
+//定义局部自定义指令 v-resize
+const vResize = {
+  mounted(el) {
+    // main区域rem自适应
+    const el_resize = new window.ResizeObserver(() => {
+      let size = el.offsetWidth / 80.375 + 'px'
+      document.querySelector("html").style.fontSize = size
+    });
+    el_resize.observe(el);
+  },
+}
+
 
 const github = () => {
     location.href = 'https://github.com/jonlyes'

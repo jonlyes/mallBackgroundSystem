@@ -1,10 +1,11 @@
 import { createStore } from "vuex";
 import router from "@/router/index.js"; //路由器
 import navList from "@/store/navList/index.js"; //路由导航模块store
-import backGroundPanel from "@/store/backGroundPanel/index.js"; //后台管理模块store
 import { loginApi, getInfo, upPassWord } from "@/api/manager.js"; //管理员模块API
+import backGroundPanel from "@/store/backGroundPanel/index.js"; //主控台模块store
+import shopManagement from "@/store/shopManagement/index.js"//商品管理模块store
 import { setToken, removeToken } from "@/utils/token.js"; //token值
-import {removeTagsList} from '@/utils/tagsList.js'
+import { removeTagsList } from "@/utils/tagsList.js";
 import { ElMessageBox } from "element-plus"; //消息弹出框
 import Message from "@/utils/message.js"; //消息提示框
 
@@ -45,7 +46,7 @@ const store = createStore({
         }).then(() => {
           // 确定退出调用
           removeToken(); //删除cookies的token值
-          removeTagsList() //删除tagsList路由列表
+          removeTagsList(); //删除tagsList路由列表
           router.push("/login");
           Message("退出登录成功！");
           resolve();
@@ -85,7 +86,7 @@ const store = createStore({
       );
     },
   },
-  modules: { navList, backGroundPanel },
+  modules: { navList, backGroundPanel ,shopManagement},
 });
 
 export default store;

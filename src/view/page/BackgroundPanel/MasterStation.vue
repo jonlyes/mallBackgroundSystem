@@ -1,5 +1,5 @@
 <template class="flex">
-  <div class="master" v-resize>
+  <div class="master">
     <div class="master-item">
       <!-- 后台统计 -->
       <div class="card" v-for="item1, index of panels" :key="index">
@@ -49,7 +49,7 @@
         <!-- 订单统计图表容器 -->
         <div>
           <div class="order-charts">
-            <div id="order-statistical" class="order-charts" v-loading="orderLoad"></div>
+            <div id="order-statistical" class="order-charts" v-loading="orderLoad" v-resize></div>
           </div>
         </div>
       </el-card>
@@ -104,11 +104,8 @@ const vResize = {
   mounted(el) {
     // main区域rem自适应
     const el_resize = new window.ResizeObserver(() => {
-      let main = document.getElementById('main')
-      let size = main.offsetWidth / 80.375 + 'px'
-      document.querySelector("html").style.fontSize = size
       // main每次改变宽度就重新获得订单统计图表的尺寸并让图表自适应
-      const { offsetWidth: width, offsetHeight: height } = document.getElementsByClassName('order-charts')
+      const { offsetWidth: width, offsetHeight: height } = el
       orderCharts?.resize(width, height)
     });
     el_resize.observe(el);
@@ -251,7 +248,7 @@ store.dispatch('getShopTips').then(res => {
 }
 
 .store-tips {
-  @apply w-38.9375rem h-200px;
+  @apply w-38.9375rem h-200px mx-10px;
 }
 
 .tips-right {

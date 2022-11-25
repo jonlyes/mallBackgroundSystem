@@ -6,7 +6,7 @@ const goodsManagement = [
     meta:{
       title:'商品管理'
     },
-    component: () => import("@/view/page/GoodsManagement/Goods.vue"),
+    component: () => import("@/view/page/GoodsManagement/Goods/index.vue"),
   },
   {
     //分类管理

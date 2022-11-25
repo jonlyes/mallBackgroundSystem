@@ -4,46 +4,52 @@
         <div>
             <!-- 头部——搜索模块 -->
             <div class="header-search">
-                <!-- left-搜索框 -->
+                <!-- left-搜索功能 -->
                 <div>
-                    <el-col :span="24" class="flex">
+                    <el-row :span="24">
                         <el-form class="flex">
-                            <el-form-item label="商品名称" size="small" class="ml-20px">
-                                <el-input :input-style="{ width: '19.2081rem' }" v-model="searchText"
-                                    placeholder="商品名称" />
-                            </el-form-item>
-                            <el-form-item label="商品分类" size="small" class="ml-40px" v-if="!isUnfold">
-                                <el-input class="w-15.2275rem" :input-style="{ width: '11.885rem' }"
-                                    v-model="searchText" placeholder="商品分类">
-                                    <template #append>
-                                        <el-select v-model="select" placeholder="Select">
-                                            <el-option label="jonlyes" value="1" />
-                                            <el-option label="jon" value="1" />
-                                            <el-option label="ai" value="1" />
-                                        </el-select>
-                                    </template>
-                                </el-input>
-                            </el-form-item>
+                            <!-- 商品搜索框 -->
+                            <el-col :span="8" class="w-25.4581rem">
+                                <el-form-item label="商品名称" size="small" class="ml-20px">
+                                    <el-input v-model="searchText" :input-style="{ width: '19.2081rem' }"
+                                        placeholder="商品名称" />
+                                </el-form-item>
+                            </el-col>
+                            <!-- 分类选择框 -->
+                            <el-col :span="8" class="w-25.4581rem">
+                                <el-form-item label="商品分类" size="small" class="ml-40px" v-if="!isUnfold">
+                                    <el-input v-model="searchText" :input-style="{ width: '11.85rem' }"
+                                        placeholder="商品分类">
+                                        <template #append>
+                                            <el-select v-model="select" placeholder="Select">
+                                                <el-option label="jonlyes" value="1" />
+                                                <el-option label="jon" value="1" />
+                                                <el-option label="ai" value="1" />
+                                            </el-select>
+                                        </template>
+                                    </el-input>
+                                </el-form-item>
+                            </el-col>
+                            <!-- 功能按钮 -->
+                            <el-col :span="8" class="w-25.4581rem flex justify-end min-w-220px">
+                                <el-button size="small" type="primary">搜索</el-button>
+                                <el-button size="small">重置</el-button>
+                                <el-button size="small" class="border-none text-blue-400" @click="isUnfold = !isUnfold">
+                                    <span>{{ isUnfold == true ? '展开' : '收起' }}
+                                        <el-icon>
+                                            <component :is="isUnfold == true ? 'ArrowDown' : 'ArrowUp'"></component>
+                                        </el-icon>
+                                    </span>
+                                </el-button>
+                            </el-col>
                         </el-form>
-                    </el-col>
-                </div>
-                <!-- right-功能按钮 -->
-                <div class="min-w-220px">
-                    <el-button size="small" type="primary">搜索</el-button>
-                    <el-button size="small">重置</el-button>
-                    <el-button size="small" class="border-none text-blue-400" @click="isUnfold = !isUnfold">
-                        <span>{{ isUnfold == true ? '展开' : '收起' }}
-                            <el-icon>
-                                <component :is="isUnfold == true ? 'ArrowDown' : 'ArrowUp'"></component>
-                            </el-icon>
-                        </span>
-                    </el-button>
+                    </el-row>
                 </div>
             </div>
         </div>
         <!-- tables数据展示区域 -->
         <div>
-            <Goods-Table :data="tableData" :isLoad="isLoad" :btnOption="btnOption" @refresh="refresh">
+            <Goods-Table :data="tableData" :isLoad="isLoad" :btnOption="btnOption" @refresh="refresh" v-if="tableData?.list?.length">
                 <template #operation>
                     <!-- <div>暂无操作</div> -->
                 </template>
@@ -83,7 +89,7 @@ let isUnfold = ref(true)
 let isLoad = ref(false)
 
 //商品数据
-const tableData = ref([])
+let tableData = ref([])
 
 //当前页码值
 let page = ref(1)
@@ -112,8 +118,9 @@ watch(page, refresh,
 
 <style>
 .header-search {
+    width: 77.7rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
 }
 

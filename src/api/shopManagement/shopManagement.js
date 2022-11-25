@@ -2,7 +2,7 @@
 import request from "@/utils/request.js";
 
 //获取商品列表
-export const getShopList = ({page, query}) =>{
+export const getShopList = (page, query) =>{
   let str =''
   for (let key in query) {
     str= str+`${key}=${query[key]}&`

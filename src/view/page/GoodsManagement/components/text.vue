@@ -53,7 +53,7 @@
                     <div class="px-10px">
                         <el-button type="danger" size="small" plain class="my-4px w-100px">审核拒绝</el-button>
                     </div>
-                    <!-- <span>通过</span> -->
+                    <span>通过</span>
                 </div>
 
             </el-table-column>
@@ -79,7 +79,7 @@
 // import { ref } from 'vue'
 
 //接收父组件传递的值
-defineProps({
+let props = defineProps({
     data: Object,
     isLoad: Boolean,
     btnOption: Array,

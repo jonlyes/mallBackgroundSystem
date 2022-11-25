@@ -8,7 +8,7 @@ const shopManagement = {
   mutations: {},
   actions: {
     // 获取商品列表
-    getShopList(store, page,query) {
+    getShopList(store, {page,query}) {
       return new Promise((resolve, reject) => {
         getShopList(page, query)
           .then((res) => {

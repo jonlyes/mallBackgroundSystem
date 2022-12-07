@@ -38,6 +38,10 @@ const activeName = ref('1')
 const handleClick = (tab, event) => {
     // console.log(tab, event)
 }
+
+
+// 新增商品功能
+
 </script>
   
 <style scoped>

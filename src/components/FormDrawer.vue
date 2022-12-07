@@ -1,15 +1,18 @@
 <template>
-  <el-drawer v-model="isShowDrawer" :title="title" direction="rtl" :size="size" :destroy-on-close="destroyOnClose">
+  <el-drawer v-model="isShowDrawer" direction="rtl" :size="size" :destroy-on-close="destroyOnClose" :close-on-click-modal="false">
+    <template #header>
+      <span class="text-16px">{{title}}</span>
+    </template>
     <div class="DrawerForm">
       <!-- 表单 -->
       <div class="fromBody">
-        <slot></slot>
+        <slot slot="default"></slot>
       </div>
 
       <div class="actions">
         <!-- 提交/取消 -->
-        <el-button type="primary" @click="confirmFn">{{confirmContext}}</el-button>
-        <el-button @click="isShowDrawer = false">取消</el-button>
+        <el-button type="primary"  class="text-16px" @click="confirmFn">{{confirmContext}}</el-button>
+        <el-button class="text-16px" @click="isShowDrawer = false">取消</el-button>
       </div>
     </div>
   </el-drawer>
@@ -67,6 +70,10 @@ defineExpose({
 }
 
 .DrawerForm .actions {
-  @apply h-50px;
+  @apply h-50px flex items-center;
+}
+
+:deep(.el-drawer__title){
+  font-size: 16px!important;
 }
 </style>

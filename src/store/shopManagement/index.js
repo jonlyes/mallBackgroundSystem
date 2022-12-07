@@ -1,4 +1,7 @@
-import { getShopList } from "@/api/shopManagement/shopManagement.js";
+import {
+  getShopList,
+  newIncreaseShop,
+} from "@/api/shopManagement/shopManagement.js";
 
 const shopManagement = {
   state: {
@@ -8,7 +11,7 @@ const shopManagement = {
   mutations: {},
   actions: {
     // 获取商品列表
-    getShopList(store, {page,query}) {
+    getShopList(store, { page, query }) {
       return new Promise((resolve, reject) => {
         getShopList(page, query)
           .then((res) => {
@@ -16,7 +19,17 @@ const shopManagement = {
           })
           .catch((err) => {
             reject(err);
-            console.log(err);
+          });
+      });
+    },
+    addShop(store, data) {
+      return new Promise((resolve, reject) => {
+        newIncreaseShop(data)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
           });
       });
     },

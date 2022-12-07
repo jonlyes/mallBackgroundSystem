@@ -42,14 +42,13 @@
                         登录
                     </el-button>
                 </el-form-item>
-
             </el-form>
         </el-col>
     </el-row>
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { ref, reactive, } from 'vue'
 import { useRouter } from 'vue-router' //路由
 import message from '@/utils/message.js' //消息弹出工具函数
 import { useStore } from 'vuex'
@@ -63,7 +62,7 @@ let userInfo = reactive({
     password: ''
 })
 
-let isLoad = ref(false) //button是否加载状态
+const isLoad = ref(false) //button是否加载状态
 
 // 表单节点
 let formRef = ref(null)
@@ -89,16 +88,15 @@ const login = () => {
             return undefined
         }
         isLoad.value = true //表单校验成功就开启load
-        
         // 登录成功
         store.dispatch('login', userInfo).then(() => {
             // 消息提示
             message('登录成功')
             // 跳转首页
             router.push('/')
+        }).finally(() => {
+            isLoad.value = false //无论是否登录成功，最终都要把load设置为false
         })
-    }).finally(() => {
-        isLoad.value = false //无论是否登录成功，最终都要把load设置为false
     })
 }
 </script>

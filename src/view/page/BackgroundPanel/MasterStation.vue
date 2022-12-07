@@ -149,7 +149,6 @@ const jumpRoute = (routePath) => {
   router.push(routePath)
 }
 
-
 //获取数据构建订单图表
 const initOrderChart = (type = 'week', index = '1') => {
   orderLoad.value = true

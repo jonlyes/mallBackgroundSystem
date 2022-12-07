@@ -15,7 +15,7 @@
     </div>
     <!-- 商品数据展示 -->
     <div v-loading="isLoad">
-        <el-table :data="data.list" stripe style="width: 100%">
+        <el-table ref="tableRef" :data="data.list" stripe style="width: 100%">
             <el-table-column type="selection" width="55" />
             <el-table-column label="商品" width="300">
                 <template #default="scope">
@@ -30,7 +30,7 @@
                                 <span class="mx-6px font-thin text-neutral-200">|</span>
                                 <span class="text-xs">￥{{ scope.row.min_oprice }}</span>
                             </div>
-                            <div class="text-neutral-400 text-xs">分类：{{ scope.row.category.name }}</div>
+                            <div class="text-neutral-400 text-xs">分类：{{ scope.row.category?.name }}</div>
                             <div class="text-neutral-400 text-xs">创建时间：{{ scope.row.create_time }}</div>
                         </div>
                     </div>
@@ -76,7 +76,7 @@
 </template>
 
 <script setup>
-// import { ref } from 'vue'
+import { ref } from 'vue'
 
 //接收父组件传递的值
 defineProps({
@@ -86,8 +86,20 @@ defineProps({
 })
 
 const emit = defineEmits(['refresh'])
-
 const refreshFn = () => emit('refresh')
+
+// 拿到table的信息
+let tableRef = ref(null)
+
+// 商品多选的重置功能
+const resetFn = () => { 
+    tableRef.value.clearSelection()
+ }
+
+// 向父组件暴露方法
+defineExpose({
+    resetFn,
+})
 
 </script>
 

@@ -14,7 +14,7 @@
                     <el-menu-item v-for="item2 of item1.child" :index="item2.frontpath">
                         <template #title>
                             <el-icon>
-                                <component :is="item2.icon"></component>
+                                <component :is="item2.icon||'ElementPlus'"></component>
                             </el-icon>
                             <span>{{ item2.name }}</span>
                         </template>

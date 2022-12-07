@@ -81,7 +81,7 @@
         </el-dropdown>
         <!-- 右侧密码修改框 -->
         <form-drawer ref="drawerRef" title="修改密码" size="45%" destroyOnClose @submitFn="submitForm">
-          <el-form ref="fromRef" :model="passWordForm" :rules="formRules">
+          <el-form ref="fromRef" v-model="passWordForm" :rules="formRules">
             <el-form-item label="旧密码" label-width="80px" prop="oldpassword">
               <el-input v-model="passWordForm.oldpassword" autocomplete="off" />
             </el-form-item>

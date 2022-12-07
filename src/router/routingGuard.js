@@ -28,8 +28,7 @@ router.beforeEach(async (to, from) => {
   }
 
   // 获取用户信息并存储到state
-  if (token) {
-    // store.dispatch('setTag',to)
+  if (token && to.path !== "/login") {
     await store.dispatch("setUserInfo").catch((err) => {
       console.log(err);
       message("请求失败，请检查网络是否有问题", "error");

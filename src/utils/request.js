@@ -1,12 +1,12 @@
 // 封装axios请求
 import theAxios from "axios";
 import message from "@/utils/message.js"; //消息提示
-import { getToken } from "@/utils/token.js"; //获取token值
+import { getToken, removeToken } from "@/utils/token.js"; //获取token值
 import router from "@/router/index.js";
 
 const axios = theAxios.create({
   baseURL: "/api", // 请求根路径
-  timeout: 10000, // 10秒超时时间
+  timeout: 20000, // 10秒超时时间
 });
 
 // 添加请求拦截器
@@ -37,12 +37,12 @@ axios.interceptors.response.use(
   function (error) {
     // 超出 2xx 范围的状态码都会触发该函数。
     // 对响应错误做点什么;
-    if (error.response.data.msg === "非法token，请先登录！") {
-      //跳到登录页面
-      router.push("/login");
+    if (error.response.data.msg == "非法token，请先登录！"){
+      //清除token跳到登录页面
+      removeToken()
+      router.push('/login')
     }
-
-    message(error.response.data.msg || "登录失败！", "error");
+      message(error.response.data.msg || "登录失败！", "error");
     return Promise.reject(error);
   }
 );

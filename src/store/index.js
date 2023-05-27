@@ -3,9 +3,11 @@ import router from "@/router/index.js"; //路由器
 import navList from "@/store/navList/index.js"; //路由导航模块store
 import { loginApi, getInfo, upPassWord } from "@/api/manager.js"; //管理员模块API
 import backGroundPanel from "@/store/backGroundPanel/index.js"; //主控台模块store
-import shopManagement from "@/store/shopManagement/index.js" //商品管理模块store
-import galleryManagement from '@/store/otherModules/index.js' //图库管理模块
+import shopManagement from "@/store/shopManagement/shopManagement.js"; //商品管理模块store
+import skuManagement from "@/store/shopManagement/skuManagement.js"; //规格管理模块
+import galleryManagement from "@/store/otherModules/galleryManagement.js"; //图库管理模块
 import { setToken, removeToken } from "@/utils/token.js"; //token值
+
 import { removeTagsList } from "@/utils/tagsList.js";
 import { ElMessageBox } from "element-plus"; //消息弹出框
 import Message from "@/utils/message.js"; //消息提示框
@@ -87,7 +89,13 @@ const store = createStore({
       );
     },
   },
-  modules: { navList, backGroundPanel ,shopManagement,galleryManagement},
+  modules: {
+    navList,
+    backGroundPanel,
+    shopManagement,
+    skuManagement,
+    galleryManagement,
+  },
 });
 
 export default store;

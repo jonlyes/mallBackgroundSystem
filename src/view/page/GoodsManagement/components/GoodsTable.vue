@@ -1,21 +1,7 @@
 <template>
-    <!-- 头部——增删上下架功能模块 -->
-    <div class="header-shopRole">
-        <!-- 功能按钮 -->
-        <div>
-            <el-button v-for="btnItem, index of btnOption" :key="index" size="small" :type="btnItem.type"
-                @click="btnItem.fn">{{ btnItem.name }}</el-button>
-        </div>
-        <!-- 刷新数据 -->
-        <div>
-            <el-icon class="refreshIcon" @click="refreshFn">
-                <Refresh />
-            </el-icon>
-        </div>
-    </div>
     <!-- 商品数据展示 -->
     <div v-loading="isLoad">
-        <el-table ref="tableRef" :data="data.list" stripe style="width: 100%">
+        <el-table ref="tableRef" :data="data?.list" stripe style="width: 100%" @selection-change="selectionFn">
             <el-table-column type="selection" width="55" />
             <el-table-column label="商品" width="300">
                 <template #default="scope">
@@ -46,24 +32,28 @@
                 </template>
             </el-table-column>
             <el-table-column label="审核状态" width="120">
-                <div>
-                    <div class="px-10px">
-                        <el-button type="success" size="small" plain class="my-4px w-100px">审核通过</el-button>
+                <template #default="scope">
+                    <div v-if="scope.row.ischeck == 0">
+                        <div>
+                            <el-button type="success" size="small" plain class="my-4px w-100px"
+                                @click="isAuditFn(scope.row.id, 1)">审核通过</el-button>
+                        </div>
+                        <div>
+                            <el-button type="danger" size="small" plain class="my-4px w-100px"
+                                @click="isAuditFn(scope.row.id, 2)">审核拒绝</el-button>
+                        </div>
                     </div>
-                    <div class="px-10px">
-                        <el-button type="danger" size="small" plain class="my-4px w-100px">审核拒绝</el-button>
-                    </div>
-                    <!-- <span>通过</span> -->
-                </div>
-
+                    <span class="text-center" v-if="scope.row.ischeck == 1">通过</span>
+                    <span class="text-center" v-if="scope.row.ischeck == 2">拒绝</span>
+                </template>
             </el-table-column>
             <el-table-column prop="stock" label="总库存" width="90" />
             <el-table-column label="操作" min-width="240px">
                 <template #default="scope">
                     <slot name="operation">
                         <div class="operation">
-                            <a>修改</a>
-                            <a>商品规格</a>
+                            <a @click="openModify(scope.row)">修改</a>
+                            <a @click="openSpecifications(scope.row.id)">商品规格</a>
                             <a>设置轮播图</a>
                             <a>商品详情</a>
                             <a>删除</a>
@@ -73,50 +63,123 @@
             </el-table-column>
         </el-table>
     </div>
+    <!-- 修改功能 -->
+    <div>
+        <!-- 侧边抽屉 -->
+        <Form-Drawer ref="drawerRef" title="修改" size="45%" destroyOnClose @submitFn="modifyFn">
+            <template #default>
+                <Shop-Form ref="shopFrom" :data="dataInfo" :cates="data?.cates"></Shop-Form>
+            </template>
+        </Form-Drawer>
+    </div>
+    <!-- 商品规格功能 -->
+    <div v-loading="skuLoad">
+        <!-- 侧边抽屉 -->
+        <Form-Drawer ref="skuRef" title="设置商品规格" size="70%" destroyOnClose>
+            <template #default>
+                <Specifications-Form :skuRef="skuRef">
+                </Specifications-Form>
+            </template>
+        </Form-Drawer>
+    </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { useStore } from 'vuex'
+import FormDrawer from '@/components/FormDrawer.vue'
+import ShopForm from '@/view/page/GoodsManagement/Goods/components/ShopForm.vue'
+import SpecificationsForm from '@/view/page/GoodsManagement/Goods/components/SpecificationsForm.vue'
+
+import { goodId, initSkuCardList } from '@/hooks/useSku.js' //商品规格hooks函数
+
+import message from '@/utils/message.js' //消息提示
+
+const store = useStore()
 
 //接收父组件传递的值
-defineProps({
+const props = defineProps({
     data: Object,
     isLoad: Boolean,
-    btnOption: Array,
 })
 
-const emit = defineEmits(['refresh'])
-const refreshFn = () => emit('refresh')
+// 获取drawer抽屉的实例
+const drawerRef = ref(null)
+
+// 获取skuRef抽屉的实例
+const skuRef = ref(null)
+
+//获取shopFrom组件的实例
+const shopFrom = ref(null)
+
+// 当前选中的商品数据
+const checkedRowData = ref([])
 
 // 拿到table的信息
-let tableRef = ref(null)
+const tableRef = ref(null)
+
+// 商品规格弹窗的load状态
+const skuLoad = ref(false)
 
 // 商品多选的重置功能
-const resetFn = () => { 
+const resetFn = () => {
     tableRef.value.clearSelection()
- }
+}
 
-// 向父组件暴露方法
+//选中表格checkbox触发的回调
+const selectionFn = (selection) => {
+    checkedRowData.value = selection
+}
+
+//审核是否通过
+const isAuditFn = (id, isCheck) => {
+    store.dispatch('auditShop', { id, isCheck }).then(res => {
+        message('操作成功')
+    }).catch(err => {
+        console.log(err);
+    })
+}
+
+// 商品信息
+const dataInfo = ref(null)
+
+//打开修改抽屉
+const openModify = (data) => {
+    dataInfo.value = data
+    drawerRef.value.open()
+}
+
+// 抽屉的表单提交事件触发回调修改请求
+const modifyFn = () => {
+    store.dispatch('modifyShop', { id: dataInfo?.value?.id, data: dataInfo?.value }).then(res => {
+        message('修改成功')
+    }).catch(err => {
+        console.log(err);
+    })
+}
+
+// 打开商品规格抽屉
+const openSpecifications = (id) => {
+    goodId.value = id
+    skuLoad.value = true
+    store.dispatch('readShopInfo', goodId.value).then(res => {
+        initSkuCardList(res)
+        skuLoad.value = false
+        skuRef.value.open()
+    }).catch(err => {
+        console.log(err);
+    })
+}
+
+// 向父组件暴露方法属性
 defineExpose({
+    checkedRowData,
     resetFn,
 })
 
 </script>
 
 <style scoped>
-.header-shopRole {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    @apply mt-10px px-10px;
-}
-
-.refreshIcon:hover {
-    border-bottom: #3b82f6 1px solid;
-    @apply text-blue-500;
-}
-
-
 :deep(.el-tag) {
     @apply px-6px py-2px h-auto;
 }

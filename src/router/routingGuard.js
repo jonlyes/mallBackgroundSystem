@@ -21,7 +21,7 @@ router.beforeEach(async (to, from) => {
 
   //防止重复登录
   if (token && to.path == "/login") {
-    if ((from.path = "/login")) {
+    if ((from.path == "/login")) {
       return { path: "/" };
     }
     return { path: from.path !== "/login" ? from.path : "/" };

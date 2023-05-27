@@ -19,7 +19,7 @@
                             <el-col :span="8" class="w-25.4581rem">
                                 <el-form-item label="商品分类" size="small" class="ml-40px" v-if="!isUnfold">
                                     <el-select v-model="ajaxQuery.category_id" clearable placeholder="请选择商品分类">
-                                        <el-option v-for="item in tableData.cates" :value-key="item.id"
+                                        <el-option v-for="item in tableData?.cates" :value-key="item.id"
                                             :label="item.name" :value="item.id" />
                                     </el-select>
                                 </el-form-item>
@@ -41,18 +41,64 @@
                 </div>
             </div>
         </div>
+
+        <!-- 头部——增删上下架功能模块 -->
+        <div class="header-shopRole">
+            <!-- 功能按钮 -->
+            <div>
+                <!-- 新增 -->
+                <el-button v-if="btnOption['new']" size="small" :type="btnOption['new'].type"
+                    @click="btnOption['new'].fn">{{ btnOption['new'].name }}</el-button>
+                <!-- 删除 -->
+                <el-popconfirm v-if="btnOption['del']" title="是否要删除批量删除选中？" width="220px" confirm-button-text="是"
+                    cancel-button-text="否" @confirm="btnOption['del'].fn(tableRef?.checkedRowData)">
+                    <template #reference>
+                        <el-button size="small" :type="btnOption['del'].type">{{ btnOption['del'].name }}</el-button>
+                    </template>
+                </el-popconfirm>
+                <!-- 上架 -->
+                <el-button v-if="btnOption['shelves']" size="small" :type="btnOption['shelves'].type"
+                    @click="btnOption['shelves'].fn(tableRef?.checkedRowData)">{{ btnOption['shelves'].name
+                    }}</el-button>
+                <!-- 下架 -->
+                <el-button v-if="btnOption['undercarriage']" size="small" :type="btnOption['undercarriage'].type"
+                    @click="btnOption['undercarriage'].fn(tableRef?.checkedRowData)">{{ btnOption['undercarriage'].name
+                    }}</el-button>
+                <!-- 恢复商品 -->
+                <el-button v-if="btnOption['recoveryGoods']" size="small" :type="btnOption['recoveryGoods'].type"
+                    @click="btnOption['recoveryGoods'].fn(tableRef?.checkedRowData)">{{ btnOption['recoveryGoods'].name
+                    }}</el-button>
+                <!-- 彻底删除 -->
+                <el-popconfirm v-if="btnOption['wipeOut']" title="是否要删除批量删除选中？" width="220px" confirm-button-text="是"
+                    cancel-button-text="否" @confirm="btnOption['wipeOut'].fn(tableRef?.checkedRowData)">
+                    <template #reference>
+                        <el-button size="small" :type="btnOption['wipeOut'].type">{{ btnOption['wipeOut'].name
+                        }}</el-button>
+                    </template>
+                </el-popconfirm>
+
+            </div>
+            <!-- 刷新数据 -->
+            <div>
+                <el-icon class="refreshIcon" @click="refresh(page, ajaxQuery)">
+                    <Refresh />
+                </el-icon>
+            </div>
+        </div>
+
         <!-- tables数据展示区域 -->
         <div>
-            <Goods-Table ref="tableRef" :data="tableData" :isLoad="isLoad" :btnOption="btnOption" @refresh="refresh(page,ajaxQuery)"
-                v-if="tableData?.list?.length">
-                <template #operation>
-                    <!-- <div>暂无操作</div> -->
+            <Goods-Table ref="tableRef" :data="tableData" :isLoad="isLoad">
+                <template v-if="ajaxOptions?.tab == 'delete'" #operation>
+                    <div class="w-[100%] flex justify-end">
+                        <span>暂无操作</span>
+                    </div>
                 </template>
             </Goods-Table>
         </div>
         <!-- 分页功能 -->
         <div class="pagination">
-            <el-pagination background layout="prev, pager, next" :total="Number(tableData.totalCount)"
+            <el-pagination background layout="prev, pager, next" :total="Number(tableData?.totalCount)"
                 @current-change="pageFn" />
         </div>
     </el-card>
@@ -66,15 +112,17 @@ import GoodsTable from '@/view/page/GoodsManagement/components/GoodsTable.vue'
 //接收父组件传递的值
 const props = defineProps({
     ajaxOptions: Object,
-    btnOption: Array
+    btnOption: Object
 })
 
-const store = useStore() //sore对象
+// store对象
+const store = useStore()
 
-const ajaxQuery = reactive({...props.ajaxOptions,title:'',category_id:null})
+// 请求参数
+const ajaxQuery = reactive({ ...props.ajaxOptions, title: '', category_id: null })
 
 // 拿到子组件的信息
-const tableRef =ref(null)
+const tableRef = ref(null)
 
 //是否展开商品分类
 const isUnfold = ref(true)
@@ -83,15 +131,15 @@ const isUnfold = ref(true)
 const isLoad = ref(false)
 
 //商品数据
-const tableData = ref([])
+const tableData = ref(null)
 
 //当前页码值
 const page = ref(1)
 
 // 刷新数据——重新发起请求获取数据
-const refresh = (page, query) => {
+const refresh = (page, query = ajaxQuery) => {
     isLoad.value = true //开启加载状态
-    store.dispatch('getShopList', { page, query },).then(res => {
+    store.dispatch('getShopList', { page, query }).then(res => {
         tableData.value = res
     }).finally(() => {
         isLoad.value = false
@@ -99,10 +147,12 @@ const refresh = (page, query) => {
 }
 
 //搜索功能
-const searchFn = ()=>refresh(page.value,ajaxQuery)
+const searchFn = () => refresh(page.value, ajaxQuery)
 
 //重置功能
-const resetFn = ()=>{tableRef.value.resetFn()}
+const resetFn = () => {
+    tableRef.value.resetFn()
+}
 
 // 页码改变触发的回调
 const pageFn = (newPage) => {
@@ -141,6 +191,18 @@ defineExpose({
     align-items: center;
 }
 
+.header-shopRole {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    @apply mt-10px px-10px;
+}
+
+.refreshIcon:hover {
+    border-bottom: #3b82f6 1px solid;
+    @apply text-blue-500;
+}
+
 .text {
     font-size: 14px;
 }
@@ -152,11 +214,18 @@ defineExpose({
 .operation {
     text-decoration: underline;
     cursor: pointer;
+    display: flex;
+    justify-content: end;
     @apply mx-10px text-blue-400 text-xs;
 }
 
 .operation>a {
     @apply mx-8px;
+}
+
+thead>tr>th:last-child>.cell {
+    text-align: end !important;
+    margin-right: 20px;
 }
 
 :deep(.el-table__row) {
@@ -187,17 +256,14 @@ defineExpose({
     height: 99px;
 }
 
+:deep(.el-table_1_column_7 .el-table__cell>.cell) {
+    text-align: end;
+}
+
 :deep(.el-table_1_column_2>.cell) {
     height: 100%;
     display: flex;
     justify-content: left;
-    align-items: center;
-}
-
-:deep(.el-table_1_column_7>.cell) {
-    height: 100%;
-    display: flex;
-    justify-content: end;
     align-items: center;
 }
 

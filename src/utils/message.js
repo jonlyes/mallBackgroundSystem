@@ -4,13 +4,13 @@ import { ElNotification } from "element-plus";
 const message = (
   message,
   type = "success",
-  dangerouslyUseHTMLString = false,
+  dangerouslyUseHTMLString = false
 ) => {
   ElNotification({
     type,
     message,
-    duration:3000,
-    dangerouslyUseHTMLString,
+    duration: 3000,
+    dangerouslyUseHTMLString: true,
   });
 };
 
